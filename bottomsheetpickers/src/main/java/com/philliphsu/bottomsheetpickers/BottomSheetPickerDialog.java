@@ -26,6 +26,7 @@ public abstract class BottomSheetPickerDialog extends BottomSheetDialogFragment 
     private static final String KEY_BACKGROUND_COLOR = "background_color";
     private static final String KEY_HEADER_COLOR = "header_color";
     private static final String KEY_HEADER_TEXT_DARK = "header_text_dark";
+    private static final String KEY_ZOOM_PERIOD = "zoom_period";
 
     // TODO: Remove duplicates in time picker classes.
     protected boolean mThemeDark;
@@ -43,6 +44,7 @@ public abstract class BottomSheetPickerDialog extends BottomSheetDialogFragment 
     protected int mBackgroundColor;
     protected int mHeaderColor;
     protected boolean mHeaderTextDark;
+    protected int mZoomPeriod;
 
     @LayoutRes
     protected abstract int contentLayout();
@@ -57,6 +59,7 @@ public abstract class BottomSheetPickerDialog extends BottomSheetDialogFragment 
             mBackgroundColor = savedInstanceState.getInt(KEY_BACKGROUND_COLOR);
             mHeaderColor = savedInstanceState.getInt(KEY_HEADER_COLOR);
             mHeaderTextDark = savedInstanceState.getBoolean(KEY_HEADER_TEXT_DARK);
+            mZoomPeriod = savedInstanceState.getInt(KEY_ZOOM_PERIOD);
         }
         // Prepare common colors.
         final Context ctx = getActivity();
@@ -112,6 +115,7 @@ public abstract class BottomSheetPickerDialog extends BottomSheetDialogFragment 
         outState.putInt(KEY_BACKGROUND_COLOR, mBackgroundColor);
         outState.putInt(KEY_HEADER_COLOR, mHeaderColor);
         outState.putBoolean(KEY_HEADER_TEXT_DARK, mHeaderTextDark);
+        outState.putInt(KEY_ZOOM_PERIOD, mZoomPeriod);
     }
 
     /**
@@ -161,6 +165,14 @@ public abstract class BottomSheetPickerDialog extends BottomSheetDialogFragment 
      */
     public final void setHeaderTextDark(boolean dark) {
         mHeaderTextDark = dark;
+    }
+
+    /**
+     * Set the min zoom period between DAY, MONTH or YEAR.
+     * The default zoom period is DAY.
+     */
+    public final void setZoomPeriod(int zoomPeriod) {
+        mZoomPeriod = zoomPeriod;
     }
 
     /**

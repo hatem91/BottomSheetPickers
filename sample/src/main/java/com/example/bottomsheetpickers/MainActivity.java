@@ -18,6 +18,9 @@ import com.philliphsu.bottomsheetpickers.time.numberpad.NumberPadTimePickerDialo
 
 import java.util.Calendar;
 
+import static com.philliphsu.bottomsheetpickers.date.DatePickerDialog.DAY_VIEW;
+import static com.philliphsu.bottomsheetpickers.date.DatePickerDialog.DAY_VIEW;
+
 public class MainActivity extends AppCompatActivity implements
         BottomSheetTimePickerDialog.OnTimeSetListener, DatePickerDialog.OnDateSetListener {
     private static final String TAG = "MainActivity";
@@ -139,7 +142,8 @@ public class MainActivity extends AppCompatActivity implements
                         MainActivity.this,
                         now.get(Calendar.YEAR),
                         now.get(Calendar.MONTH),
-                        now.get(Calendar.DAY_OF_MONTH));
+                        now.get(Calendar.DAY_OF_MONTH),
+                        DAY_VIEW);
                 DatePickerDialog.Builder dateDialogBuilder = (DatePickerDialog.Builder) builder;
                 dateDialogBuilder.setMaxDate(max)
                         .setMinDate(now)
@@ -216,7 +220,8 @@ public class MainActivity extends AppCompatActivity implements
                         MainActivity.this,
                         now.get(Calendar.YEAR),
                         now.get(Calendar.MONTH),
-                        now.get(Calendar.DAY_OF_MONTH));
+                        now.get(Calendar.DAY_OF_MONTH),
+                        DAY_VIEW);
                 custom = checkedId == R.id.choice_date_picker_custom;
                 customDark = checkedId == R.id.choice_date_picker_custom_dark;
                 themeDark = checkedId == R.id.choice_date_picker_dark || customDark;

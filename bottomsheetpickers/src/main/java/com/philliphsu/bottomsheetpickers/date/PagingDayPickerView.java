@@ -57,8 +57,9 @@ class PagingDayPickerView extends LinearLayout implements OnDateChangedListener,
 
     private static final String TAG = "MonthFragment";
 
-    static final int DAY_PICKER_INDEX = 0;
-    static final int MONTH_PICKER_INDEX = 1;
+    public static final int YEAR_PICKER_INDEX = 0;
+    public static final int DAY_PICKER_INDEX = 1;
+    public static final int MONTH_PICKER_INDEX = 2;
 
     static int MONTH_NAVIGATION_BAR_SIZE;
 
@@ -78,10 +79,8 @@ class PagingDayPickerView extends LinearLayout implements OnDateChangedListener,
     private ImageButton mNextButton;
     private View mTitleContainer;
 
-    // The arrow that initially points down and rotates to point up
-    private AnimatedVectorDrawableCompat mArrowDownDrawable;
-    // The arrow that initially points up and rotates to point down
-    private AnimatedVectorDrawableCompat mArrowUpDrawable;
+    private int mSelectedZoomPeriod;
+    private int mZoomPeriod;
 
     protected CalendarDay mTempDay = new CalendarDay();
 
@@ -94,6 +93,7 @@ class PagingDayPickerView extends LinearLayout implements OnDateChangedListener,
 
     private DatePickerController mController;
 
+    private DatePickerDialog datePickerDialog;
     private boolean mThemeDark;
     private int mAccentColor;
 
@@ -118,6 +118,12 @@ class PagingDayPickerView extends LinearLayout implements OnDateChangedListener,
         mAccentColor = accentColor;
         init(context);
         setController(controller);
+    }
+
+    public void setDatePickerDialog(DatePickerDialog datePickerDialog, int zoomPeriod){
+        this.datePickerDialog = datePickerDialog;
+        this.mZoomPeriod = zoomPeriod;
+        mSelectedZoomPeriod = zoomPeriod;
     }
 
     public void setController(DatePickerController controller) {
@@ -148,7 +154,7 @@ class PagingDayPickerView extends LinearLayout implements OnDateChangedListener,
         mTitleContainer.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                int newIndex = mCurrentView == DAY_PICKER_INDEX ? MONTH_PICKER_INDEX : DAY_PICKER_INDEX;
+                int newIndex = mCurrentView == DAY_PICKER_INDEX ? MONTH_PICKER_INDEX : YEAR_PICKER_INDEX;
                 setupCurrentView(newIndex, true);
             }
         });
@@ -172,10 +178,7 @@ class PagingDayPickerView extends LinearLayout implements OnDateChangedListener,
                 }
             }
         });
-
-        mArrowDownDrawable = AnimatedVectorDrawableCompat.create(context, R.drawable.bsp_animated_arrow_drop_down);
-        mArrowUpDrawable   = AnimatedVectorDrawableCompat.create(context, R.drawable.bsp_animated_arrow_drop_up);
-        setArrowDrawableOnTitle(mArrowDownDrawable);
+        toggleArrowsVisibility(false, false);
 
         // Theme-specific configurations.
         if (mThemeDark) {
@@ -191,12 +194,8 @@ class PagingDayPickerView extends LinearLayout implements OnDateChangedListener,
         // Set up colors.
         int monthYearTitleColor = getColor(context, mThemeDark?
                 R.color.bsp_text_color_primary_dark : R.color.bsp_text_color_primary_light);
-        int dropdownArrowColor = getColor(context, mThemeDark?
-                R.color.bsp_icon_color_active_dark : R.color.bsp_icon_color_active_light);
 
         mMonthYearTitleView.setTextColor(monthYearTitleColor);
-        mArrowDownDrawable.setTint(dropdownArrowColor);
-        mArrowUpDrawable.setTint(dropdownArrowColor);
 
         mMonthPickerView.setTheme(context, mThemeDark);
     }
@@ -228,19 +227,20 @@ class PagingDayPickerView extends LinearLayout implements OnDateChangedListener,
     void setupCurrentView(int currentView, boolean animate) {
         if (currentView == DAY_PICKER_INDEX || currentView == MONTH_PICKER_INDEX) {
             boolean isDayPicker = currentView == DAY_PICKER_INDEX;
+            Log.i("###############", "AAAAAAAAAAAAAAAA");
             setCurrentView(currentView, animate);
             if (isDayPicker) {
                 setTitle(mAdapter.getPageTitle(mViewPager.getCurrentItem()));
-                toggleArrowsVisibility(getPagerPosition());
             } else {
                 // Fortunately, very few locales have a year pattern string different
                 // from "yyyy". Localization isn't too important here.
                 // TODO: Decide if you really want the year to be localized.
                 setTitle(String.valueOf(mCurrentYearDisplayed));
-                toggleArrowsVisibility(false, false);
             }
         } else {
-            Log.e(TAG, "Error restoring current view");
+            if(datePickerDialog != null){
+                datePickerDialog.setCurrentView(YEAR_PICKER_INDEX);
+            }
         }
     }
 
@@ -380,14 +380,21 @@ class PagingDayPickerView extends LinearLayout implements OnDateChangedListener,
         mAdapter.setSelectedDay(day);
     }
 
+    public void setDateZoomView(int selectedZoomPeriod){
+        mSelectedZoomPeriod = selectedZoomPeriod;
+    }
+
     @Override
     public void onDateChanged() {
         if (mCurrentView != DAY_PICKER_INDEX) {
-            setCurrentView(DAY_PICKER_INDEX, false);
+            setCurrentView(DAY_PICKER_INDEX, true);
             // Restore the title and cursors
             onPageSelected(mViewPager.getCurrentItem());
         }
         goTo(mController.getSelectedDay(), false, true, true);
+        if(mSelectedZoomPeriod == MONTH_PICKER_INDEX){
+            setupCurrentView(MONTH_PICKER_INDEX, true);
+        }
     }
 
     /**
@@ -530,7 +537,6 @@ class PagingDayPickerView extends LinearLayout implements OnDateChangedListener,
     public void onPageSelected(int position) {
         if (mCurrentView == DAY_PICKER_INDEX) {
             setTitle(mAdapter.getPageTitle(position));
-            toggleArrowsVisibility(position);
             final int month = mAdapter.getMonth(position);
             final int year = mAdapter.getYear(position);
             if (mCurrentYearDisplayed != year) {
@@ -549,16 +555,6 @@ class PagingDayPickerView extends LinearLayout implements OnDateChangedListener,
 
     private void setTitle(CharSequence title) {
         mMonthYearTitleView.setText(title);
-    }
-
-    /**
-     * A variant of {@link #toggleArrowsVisibility(boolean, boolean)} suitable
-     * for when a new page has been selected.
-     *
-     * @param position The page position
-     */
-    private void toggleArrowsVisibility(int position) {
-        toggleArrowsVisibility(position > 0, position + 1 < mAdapter.getCount());
     }
 
     private void toggleArrowsVisibility(boolean leftVisible, boolean rightVisible) {
@@ -583,16 +579,14 @@ class PagingDayPickerView extends LinearLayout implements OnDateChangedListener,
         switch (viewIndex) {
             case DAY_PICKER_INDEX:
                 if (mCurrentView != viewIndex) {
-                    mMonthAnimator.setDisplayedChild(DAY_PICKER_INDEX, animate);
-                    animateArrow(mArrowUpDrawable);
+                    mMonthAnimator.setDisplayedChild(0, animate);
                     mCurrentView = viewIndex;
                 }
                 break;
             case MONTH_PICKER_INDEX:
                 if (mCurrentView != viewIndex) {
                     prepareMonthPickerForDisplay(mCurrentYearDisplayed);
-                    mMonthAnimator.setDisplayedChild(MONTH_PICKER_INDEX, animate);
-                    animateArrow(mArrowDownDrawable);
+                    mMonthAnimator.setDisplayedChild(1, animate);
                     mCurrentView = viewIndex;
                 }
                 break;
@@ -622,7 +616,6 @@ class PagingDayPickerView extends LinearLayout implements OnDateChangedListener,
         // Since the pages will change, onPageSelected() will call through and one
         // call to setTitle() is made. After that, one more call would be made from here.
         if (month == mCurrentMonthDisplayed) {
-            // manual invocation
             onPageSelected(mViewPager.getCurrentItem());
         }
         mController.tryVibrate();

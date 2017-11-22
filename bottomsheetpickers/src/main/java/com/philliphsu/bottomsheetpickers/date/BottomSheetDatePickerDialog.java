@@ -28,9 +28,9 @@ import java.util.Calendar;
 public class BottomSheetDatePickerDialog extends DatePickerDialog {
 
     public static BottomSheetDatePickerDialog newInstance(OnDateSetListener callBack, int year,
-                                               int monthOfYear, int dayOfMonth) {
+                                               int monthOfYear, int dayOfMonth, int zoomPeriod) {
         BottomSheetDatePickerDialog ret = new BottomSheetDatePickerDialog();
-        ret.initialize(callBack, year, monthOfYear, dayOfMonth);
+        ret.initialize(callBack, year, monthOfYear, dayOfMonth, zoomPeriod);
         return ret;
     }
 
@@ -45,8 +45,8 @@ public class BottomSheetDatePickerDialog extends DatePickerDialog {
          * @param monthOfYear The initial month of the dialog.
          * @param dayOfMonth  The initial day of the dialog.
          */
-        public Builder(OnDateSetListener listener, int year, int monthOfYear, int dayOfMonth) {
-            super(listener, year, monthOfYear, dayOfMonth);
+        public Builder(OnDateSetListener listener, int year, int monthOfYear, int dayOfMonth, int zoomPeriod) {
+            super(listener, year, monthOfYear, dayOfMonth, zoomPeriod);
         }
 
         @Override
@@ -116,7 +116,7 @@ public class BottomSheetDatePickerDialog extends DatePickerDialog {
 
         @Override
         public BottomSheetDatePickerDialog build() {
-            BottomSheetDatePickerDialog dialog = newInstance(mListener, mYear, mMonthOfYear, mDayOfMonth);
+            BottomSheetDatePickerDialog dialog = newInstance(mListener, mYear, mMonthOfYear, mDayOfMonth, mZoomPeriod);
             super_build(dialog);
             return dialog;
         }

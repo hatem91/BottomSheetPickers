@@ -33,15 +33,7 @@
         android:orientation="horizontal" >
 
         <com.philliphsu.bottomsheetpickers.AccessibleTextView
-            android:id="@+id/bsp_date_picker_first_textview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:includeFontPadding="false"
-            android:textColor="@color/bsp_date_picker_selector"
-            android:textSize="@dimen/bsp_selected_date_month_size" />
-
-        <com.philliphsu.bottomsheetpickers.AccessibleTextView
-            android:id="@+id/bsp_date_picker_second_textview"
+            android:id="@+id/bsp_date_picker_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:includeFontPadding="false"

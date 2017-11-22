@@ -648,6 +648,11 @@ public class DatePickerDialog extends BottomSheetPickerDialog implements
         // Do nothing.
     }
 
+    public void addToYear(int year) {
+        year = mCalendar.getTime().getYear()+1900+year;
+        onYearSelected(year);
+    }
+
     @Override
     public void onYearSelected(int year) {
         adjustDayInMonthIfNeeded(mCalendar.get(Calendar.MONTH), year);

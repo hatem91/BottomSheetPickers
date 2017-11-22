@@ -145,9 +145,6 @@ public class MainActivity extends AppCompatActivity implements
                         now.get(Calendar.DAY_OF_MONTH),
                         DAY_VIEW);
                 DatePickerDialog.Builder dateDialogBuilder = (DatePickerDialog.Builder) builder;
-                dateDialogBuilder.setMaxDate(max)
-                        .setMinDate(now)
-                        .setYearRange(1970, 2032);
                 if (custom || customDark) {
                     dateDialogBuilder.setHeaderTextColorSelected(0xFFFF4081)
                             .setHeaderTextColorUnselected(0x4AFF4081)
@@ -226,11 +223,6 @@ public class MainActivity extends AppCompatActivity implements
                 customDark = checkedId == R.id.choice_date_picker_custom_dark;
                 themeDark = checkedId == R.id.choice_date_picker_dark || customDark;
                 DatePickerDialog dateDialog = (DatePickerDialog) dialog;
-                dateDialog.setMinDate(now);
-                Calendar max = Calendar.getInstance();
-                max.add(Calendar.YEAR, 10);
-                dateDialog.setMaxDate(max);
-                dateDialog.setYearRange(1970, 2032);
                 if (custom || customDark) {
                     dateDialog.setHeaderTextColorSelected(0xFFFF4081);
                     dateDialog.setHeaderTextColorUnselected(0x4AFF4081);

@@ -31,6 +31,7 @@ import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
@@ -162,9 +163,13 @@ class PagingDayPickerView extends LinearLayout implements OnDateChangedListener,
         mPreviousButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                int previousItem = mViewPager.getCurrentItem() - 1;
-                if (previousItem >= 0) {
-                    mViewPager.setCurrentItem(previousItem, true);
+                if(mCurrentView == DAY_PICKER_INDEX) {
+                    int previousItem = mViewPager.getCurrentItem() - 1;
+                    if (previousItem >= 0) {
+                        mViewPager.setCurrentItem(previousItem, true);
+                    }
+                }else{
+                    datePickerDialog.addToYear(-1);
                 }
             }
         });
@@ -172,13 +177,17 @@ class PagingDayPickerView extends LinearLayout implements OnDateChangedListener,
         mNextButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                int nextItem = mViewPager.getCurrentItem() + 1;
-                if (nextItem < mAdapter.getCount()) {
-                    mViewPager.setCurrentItem(nextItem, true);
+                if(mCurrentView == DAY_PICKER_INDEX){
+                    int nextItem = mViewPager.getCurrentItem() + 1;
+                    if (nextItem < mAdapter.getCount()) {
+                        mViewPager.setCurrentItem(nextItem, true);
+                    }
+                }else{
+                    datePickerDialog.addToYear(1);
                 }
             }
         });
-        toggleArrowsVisibility(false, false);
+        toggleArrowsVisibility(true, true);
 
         // Theme-specific configurations.
         if (mThemeDark) {

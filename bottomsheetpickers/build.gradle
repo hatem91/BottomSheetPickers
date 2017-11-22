@@ -10,8 +10,8 @@ ext {
 
     libraryDescription = 'Third-party time pickers for Android'
 
-    siteUrl = 'https://github.com/philliphsu/BottomSheetPickers'
-    gitUrl = 'https://github.com/philliphsu/BottomSheetPickers.git'
+    siteUrl = 'https://github.com/hatemabidi/BottomSheetPickers'
+    gitUrl = 'https://github.com/hatemabidi/BottomSheetPickers.git'
 
     libraryVersion = rootProject.ext.versionName
 
